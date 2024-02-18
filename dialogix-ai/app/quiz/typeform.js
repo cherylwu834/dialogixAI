@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { IoChevronBack, IoChevronForward } from 'react-icons/io5'
+import { useRouter } from 'next/navigation'
 
 const questions = [
     {
@@ -18,8 +20,10 @@ const questions = [
 ]
 
 export default function Form() {
+    const router = useRouter()
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-    const [answers, setAnswers] = useState({})
+    const [language, setLanguage] = useState('English')
+    const [topic, setTopic] = useState('')
     const [transitionState, setTransitionState] = useState('slideIn')
 
     const handleNext = () => {
@@ -32,20 +36,30 @@ export default function Form() {
     }
 
     const handlePrevious = () => {
-        setCurrentQuestionIndex((prev) => (prev > 0 ? prev - 1 : 0))
+        setTransitionState('slideOut')
+        // Wait for the animation to complete before changing the question.
+        setTimeout(() => {
+            setCurrentQuestionIndex((prev) => (prev > 0 ? prev - 1 : 0))
+            setTransitionState('slideIn')
+        }, 300) // This should match the animation-duration.
     }
 
-    const handleAnswerChange = (event) => {
-        const { name, value, checked, type } = event.target
-        const isCheckbox = type === 'checkbox'
-        const answerValue = isCheckbox ? checked : value
+    const handleLanguageChange = (event) => {
+        setLanguage(event.target.value)
+    }
 
-        setAnswers((prev) => ({
-            ...prev,
-            [name]: isCheckbox ? { ...prev[name], [value]: answerValue } : answerValue,
-        }))
-        console.log(event.target)
-        console.log(answers)
+    const handleTopicChange = (event) => {
+        if (topic === event.target.value) {
+            setTopic('')
+            return
+        }
+        setTopic(event.target.value)
+    }
+
+    const handleSubmit = () => {
+        console.log('Language: ', language)
+        console.log('Topic: ', topic)
+        router.push(`/lesson?language=${language.toLocaleLowerCase()}&topic=${topic.toLocaleLowerCase()}`)
     }
 
     const renderQuestionInput = (question) => {
@@ -54,9 +68,9 @@ export default function Form() {
                 return (
                     <select
                         name={String(question.id)}
-                        onChange={handleAnswerChange}
-                        className="focus:[#0063E2] mt-4 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm focus:border-transparent focus:outline-none focus:ring-2"
-                        defaultValue=""
+                        onChange={handleLanguageChange}
+                        className="focus:ring-blue mt-4 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm focus:border-transparent focus:outline-none focus:ring-2"
+                        value={language}
                     >
                         <option disabled>Select your option</option>
                         {question.options.map((option) => (
@@ -68,18 +82,22 @@ export default function Form() {
                 )
             case 'checkbox':
                 return question.options.map((option) => (
-                    <div key={option} className="mt-2 flex items-center">
+                    <div
+                        key={option}
+                        className="border-blue mt-2 flex w-[190px] items-center rounded-md border border-solid bg-[#E7ECF7] p-2 hover:bg-[#B7C6E8] active:border-[#0445AF]"
+                    >
                         <input
                             type="checkbox"
                             id={`${question.id}-${option}`}
                             name={String(question.id)}
                             value={option}
-                            onChange={handleAnswerChange}
-                            className="h-4 w-4 rounded border-gray-300 text-[#0063E2] focus:ring-[#0063E2]"
+                            onChange={handleTopicChange}
+                            className="text-blue focus:ring-blue h-4 w-4 rounded border-gray-300"
                         />
                         <label htmlFor={`${question.id}-${option}`} className="ml-2 block text-sm text-gray-900">
                             {option}
                         </label>
+                        {/* {topic === option && <FaCheck className="ml-auto" color="#0445AF" />} */}
                     </div>
                 ))
             default:
@@ -90,29 +108,38 @@ export default function Form() {
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-4">
             <div className={`w-full max-w-xl rounded-lg bg-white p-6 shadow-md ${transitionState}`} style={{ animationDuration: '0.3s' }}>
-                <div className={`question text-2xl font-bold text-black`}>{questions[currentQuestionIndex].question}</div>
-                <form className="mt-4">
-                    {renderQuestionInput(questions[currentQuestionIndex])}
-                    <div className="mt-6 flex justify-between">
-                        <button
-                            type="button"
-                            onClick={handlePrevious}
-                            className="rounded bg-gray-300 px-4 py-2 text-gray-800 hover:bg-gray-400 disabled:opacity-50"
-                            disabled={currentQuestionIndex === 0}
-                        >
-                            Previous
-                        </button>
-                        <button
-                            type="button"
-                            onClick={handleNext}
-                            className="rounded bg-[#0063E2] px-4 py-2 text-white hover:bg-[#337BFF] disabled:opacity-50"
-                            disabled={currentQuestionIndex === questions.length - 1}
-                        >
-                            Next
-                        </button>
-                    </div>
-                </form>
+                <div className={'question pb-4 text-2xl font-normal text-black'}>{questions[currentQuestionIndex].question}</div>
+                <form className="mt-4">{renderQuestionInput(questions[currentQuestionIndex])}</form>
             </div>
+            <div className="mt-6 flex justify-end">
+                <div className="bg-blue mb-4 rounded">
+                    <button
+                        type="button"
+                        onClick={handlePrevious}
+                        className="rounded-l border-r border-gray-200 px-4 py-2 duration-300 ease-in-out hover:bg-[#2A61BB]"
+                        disabled={currentQuestionIndex === 0}
+                    >
+                        <IoChevronBack className="text-white " />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleNext}
+                        className="rounded-r px-4 py-2 duration-300 ease-in-out hover:bg-[#2A61BB]"
+                        disabled={currentQuestionIndex === questions.length - 1}
+                    >
+                        <IoChevronForward />
+                    </button>
+                </div>
+            </div>
+            {currentQuestionIndex === questions.length - 1 && (
+                <button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="bg-blue rounded px-4 py-2 duration-300 ease-in-out hover:bg-[#2A61BB]"
+                >
+                    Submit
+                </button>
+            )}
         </div>
     )
 }
