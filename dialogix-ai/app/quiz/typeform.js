@@ -8,13 +8,13 @@ const questions = [
     {
         id: 1,
         type: 'dropdown',
-        question: 'Which language would you like this lesson to be conducted in?',
+        question: 'Which language would you like this lesson to be conducted in?*',
         options: ['English', 'Chinese', 'French'],
     },
     {
         id: 2,
         type: 'checkbox',
-        question: 'Which topic would you like to talk about?',
+        question: 'Which topic would you like to talk about?*',
         options: ['Technology', 'Art', 'Science', 'Food'],
     },
 ]
@@ -62,6 +62,10 @@ export default function Form() {
         router.push(`/lesson?language=${language.toLocaleLowerCase()}&topic=${topic.toLocaleLowerCase()}`)
     }
 
+    const isInputEmpty = (input) => {
+        return input == ''
+    }
+
     const renderQuestionInput = (question) => {
         switch (question.type) {
             case 'dropdown':
@@ -69,7 +73,7 @@ export default function Form() {
                     <select
                         name={String(question.id)}
                         onChange={handleLanguageChange}
-                        className="focus:ring-blue mt-4 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm focus:border-transparent focus:outline-none focus:ring-2"
+                        className="focus:ring-blue text-blue mt-4 block w-full rounded-md border border-gray-300 bg-white p-2 shadow-sm focus:border-transparent focus:outline-none focus:ring-2"
                         value={language}
                     >
                         <option disabled>Select your option</option>
@@ -106,12 +110,23 @@ export default function Form() {
     }
 
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 p-4">
-            <div className={`w-full max-w-xl rounded-lg bg-white p-6 shadow-md ${transitionState}`} style={{ animationDuration: '0.3s' }}>
-                <div className={'question pb-4 text-2xl font-normal text-black'}>{questions[currentQuestionIndex].question}</div>
-                <form className="mt-4">{renderQuestionInput(questions[currentQuestionIndex])}</form>
+        <div className="flex min-h-screen flex-col items-center justify-center bg-white p-4">
+            <div className={`mt-auto w-full rounded-lg bg-white p-6 ${transitionState}`} style={{ animationDuration: '0.3s' }}>
+                <div className="w-fit">
+                    <div className={'question pb-4 text-2xl font-normal text-black'}>{questions[currentQuestionIndex].question}</div>
+                    <form className="mb-8 mt-4">{renderQuestionInput(questions[currentQuestionIndex])}</form>
+                    {currentQuestionIndex === questions.length - 1 && !isInputEmpty(topic) && (
+                        <button
+                            type="button"
+                            onClick={handleSubmit}
+                            className="bg-blue rounded px-4 py-2 duration-300 ease-in-out hover:bg-[#2A61BB]"
+                        >
+                            Submit
+                        </button>
+                    )}
+                </div>
             </div>
-            <div className="mt-6 flex justify-end">
+            <div className="mt-auto flex justify-end">
                 <div className="bg-blue mb-4 rounded">
                     <button
                         type="button"
@@ -131,15 +146,6 @@ export default function Form() {
                     </button>
                 </div>
             </div>
-            {currentQuestionIndex === questions.length - 1 && (
-                <button
-                    type="button"
-                    onClick={handleSubmit}
-                    className="bg-blue rounded px-4 py-2 duration-300 ease-in-out hover:bg-[#2A61BB]"
-                >
-                    Submit
-                </button>
-            )}
         </div>
     )
 }
