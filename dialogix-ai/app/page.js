@@ -29,7 +29,7 @@ export default function Home() {
       />
       <div className="z-6 fixed top-40 left-40 pt-20 pr-4 flex flex-col items-left justify-between">
         <div className="flex flex-row ">
-          <h1 className="text-[#0063E2] text-6xl"> diagix </h1> 
+          <h1 className="text-[#0063E2] text-6xl"> dialogix </h1> 
           <h1 className="text-[#0063E2] text-6xl font-bold"> AI </h1>
         </div>
         <h2 className="text-[#0063E2] text-3xl mt-2">
@@ -43,10 +43,15 @@ export default function Home() {
           <p>&nbsp;and&nbsp;</p>
           <p className="font-bold">expression</p>
         </div>
-        <button onClick={handleClick} className="bg-[#0063E2] text-white mt-10 p-2 rounded">
-          Let's start
+        <button onClick={handleClick} className="group transition duration-300 bg-[#0063E2] hover:bg-[#324781] text-lg text-white mt-10 p-2 rounded-md">
+          Let's start {""}
+          <span className="inline-block transition-transform group-hover:translate-x-3 motion-reduce:transform-none">
+              -&gt;
+          </span>
         </button>
+        
       </div>
+
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
       </div>
     </main>
