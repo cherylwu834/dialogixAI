@@ -31,25 +31,33 @@ export default function Lesson() {
         subscribeTranscript: false,
         audioDeviceConfig,
     })
-    const [messages, setMessages] = useState([
-        { text: 'Hi there!', isOwn: false },
-        { text: 'Hi there! My name is Bryan', isOwn: true },
-        // Add more initial messages if needed
-    ])
 
-    const handleSendMessage = (newMessage) => {
-        setMessages([...messages, { text: newMessage, isOwn: true }])
+    const renderButton = () => {
+        if (status === 'connected')
+            return (
+                <button
+                    disabled={['connecting', 'error'].includes(status)}
+                    onClick={stop}
+                    className="rounded bg-[#00A651] px-4 py-2 text-white duration-300 ease-in-out hover:bg-[#33B864]"
+                >
+                    Stop talking
+                </button>
+            )
+        return (
+            <button
+                disabled={['connecting', 'error'].includes(status)}
+                onClick={status === 'connected' ? stop : start}
+                className="rounded bg-blue px-4 py-2 text-white duration-300 ease-in-out hover:bg-[#2A61BB]"
+            >
+                Start talking
+            </button>
+        )
     }
 
     return (
-        <div className="flex">
-            <div className="flex-1">
-                Avatar
-                <div>
-                    <button disabled={['connecting', 'error'].includes(status)} onClick={status === 'connected' ? stop : start}>
-                        Start talking
-                    </button>
-                </div>
+        <div className="h-screen">
+            <div className="flex h-full flex-col items-center justify-center">
+                <div>{renderButton()}</div>
                 {inputDevices.length != -1 && (
                     <select
                         name="input speaker"
@@ -60,6 +68,7 @@ export default function Lesson() {
                             })
                         }
                         value={audioDeviceConfig.inputDeviceId}
+                        className="mt-4 block w-full rounded-md border border-gray-300 bg-white p-2 text-blue shadow-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue"
                     >
                         {inputDevices.map((device, i) => {
                             return (
@@ -80,6 +89,7 @@ export default function Lesson() {
                             })
                         }
                         value={audioDeviceConfig.outputDeviceId}
+                        className="mt-4 block w-full rounded-md border border-gray-300 bg-white p-2 text-blue shadow-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue"
                     >
                         {outputDevices.map((device, i) => {
                             return (
@@ -98,9 +108,6 @@ export default function Lesson() {
                             </div>
                         )
                     })}
-            </div>
-            <div className="container mx-auto flex-1">
-                <ChatBox messages={messages} onSendMessage={handleSendMessage} />
             </div>
         </div>
     )
