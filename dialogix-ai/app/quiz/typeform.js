@@ -57,8 +57,6 @@ export default function Form() {
     }
 
     const handleSubmit = () => {
-        console.log('Language: ', language)
-        console.log('Topic: ', topic)
         router.push(`/lesson?language=${language.toLocaleLowerCase()}&topic=${topic.toLocaleLowerCase()}`)
     }
 
@@ -91,7 +89,7 @@ export default function Form() {
                         className="border-blue mt-2 flex w-[190px] items-center rounded-md border border-solid bg-[#E7ECF7] p-2 hover:bg-[#B7C6E8] active:border-[#0445AF]"
                     >
                         <input
-                            type="checkbox"
+                            type="radio"
                             id={`${question.id}-${option}`}
                             name={String(question.id)}
                             value={option}
