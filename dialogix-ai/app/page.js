@@ -1,12 +1,13 @@
 'use client';
 import Image from "next/image";
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
 
   const handleClick = () => {
-    //TODO: Redirect to the quiz page
-    alert('Going to the quiz page');
+    router.push('/quiz')
   };
 
   return (
