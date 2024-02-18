@@ -8,13 +8,13 @@ const questions = [
     {
         id: 1,
         type: 'dropdown',
-        question: 'Which language would you like this lesson to be conducted in?*',
+        question: 'Which language are you trying to learn?*',
         options: ['English', 'Chinese', 'French'],
     },
     {
         id: 2,
         type: 'checkbox',
-        question: 'Which topic would you like to talk about?*',
+        question: 'What would you like to talk about?*',
         options: ['Technology', 'Art', 'Science', 'Food'],
     },
 ]
@@ -109,15 +109,15 @@ export default function Form() {
 
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-white p-4">
-            <div className={`mt-auto w-full rounded-lg bg-white p-6 ${transitionState}`} style={{ animationDuration: '0.3s' }}>
-                <div className="w-fit">
-                    <div className={'question pb-4 text-2xl font-normal text-black'}>{questions[currentQuestionIndex].question}</div>
+            <div className={`flex items-center justify-center mt-auto w-full rounded-lg bg-white p-6 ${transitionState}`} style={{ animationDuration: '0.3s' }}>
+                <div className="max-w-3xl">
+                    <div className={'question pb-4 text-2xl font-normal items-center text-black'}>{questions[currentQuestionIndex].question}</div>
                     <form className="mb-8 mt-4">{renderQuestionInput(questions[currentQuestionIndex])}</form>
                     {currentQuestionIndex === questions.length - 1 && !isInputEmpty(topic) && (
                         <button
                             type="button"
                             onClick={handleSubmit}
-                            className="bg-blue rounded px-4 py-2 duration-300 ease-in-out hover:bg-[#2A61BB]"
+                            className="bg-blue text-white rounded px-4 py-2 duration-300 ease-in-out hover:bg-[#2A61BB]"
                         >
                             Submit
                         </button>
@@ -129,7 +129,7 @@ export default function Form() {
                     <button
                         type="button"
                         onClick={handlePrevious}
-                        className="rounded-l border-r border-gray-200 px-4 py-2 duration-300 ease-in-out hover:bg-[#2A61BB]"
+                        className="rounded-l border-r border-gray-200 px-4  py-2 duration-300 ease-in-out hover:bg-[#2A61BB]"
                         disabled={currentQuestionIndex === 0}
                     >
                         <IoChevronBack className="text-white " />
@@ -140,7 +140,7 @@ export default function Form() {
                         className="rounded-r px-4 py-2 duration-300 ease-in-out hover:bg-[#2A61BB]"
                         disabled={currentQuestionIndex === questions.length - 1}
                     >
-                        <IoChevronForward />
+                        <IoChevronForward className="text-white "/>
                     </button>
                 </div>
             </div>
